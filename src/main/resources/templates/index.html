@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <title>Журнал учёта телефонограмм</title>
+</head>
+<body>
+<div class="b-example-divider"></div>
+
+<header class="py-3 border-bottom bg-light">
+    <div class="container d-flex flex-wrap justify-content-center">
+        <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
+            <span class="fs-4">Журнал учёта телефонограмм</span>
+        </a>
+
+        <input type="radio" class="btn-check me-2" name="options-outlined" id="success-outlined" autocomplete="off" checked>
+        <label class="btn btn-outline-default me-2" for="success-outlined">Входящие</label>
+
+        <input type="radio" class="btn-check me-2" name="options-outlined" id="danger-outlined" autocomplete="off">
+        <label class="btn btn-outline-default me-2" for="danger-outlined">Исходящие</label>
+
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
+            <input type="search" class="form-control" placeholder="Поиск" aria-label="Search">
+        </form>
+    </div>
+</header>
+<nav class="py-2 bg-light border-bottom">
+    <div class="container">
+        <button type="button" class="btn btn-success me-2">Добавить</button>
+        <button type="button" class="btn btn-warning me-2">Изменить</button>
+        <button type="button" class="btn btn-danger me-2">Удалить</button>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <table class="table table-hover table-bordered">
+        <tr class="table-primary">
+            <th>Номер
+            <th>Дата
+            <th>Сообщение
+            <th>Создатель
+            <th>Отправитель
+            <th>Получатель
+        <tr th:each="phonogram : ${phonograms}">
+            <td th:text="${phonogram.item}">
+            <td th:text="${phonogram.registrationDate}">
+            <td th:text="${phonogram.message}">
+            <td th:text="|${phonogram.writer.department.title}, ${phonogram.writer.fio}|">
+            <td th:text="|${phonogram.sender.department.title}, ${phonogram.sender.fio}|">
+            <td th:text="|${phonogram.receiver.department.title}, ${phonogram.receiver.fio}|">
+    </table>
+</div>
+</body>
+</html>
