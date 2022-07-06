@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
     <title>Журнал учёта телефонограмм</title>
 </head>
 <body>
+<!-- Шапка -->
 <div class="b-example-divider"></div>
-
 <header class="py-3 border-bottom bg-light">
     <div class="container d-flex flex-wrap justify-content-center">
         <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
@@ -32,12 +31,12 @@
 </header>
 <nav class="py-2 bg-light border-bottom">
     <div class="container">
-        <button type="button" class="btn btn-success me-2">Добавить</button>
+        <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Добавить</button>
         <button type="button" class="btn btn-warning me-2">Изменить</button>
         <button type="button" class="btn btn-danger me-2">Удалить</button>
     </div>
 </nav>
-
+<!-- Главная таблица -->
 <div class="container mt-4">
     <table class="table table-hover table-bordered">
         <tr class="table-primary">
@@ -56,5 +55,62 @@
             <td th:text="|${phonogram.receiver.department.title}, ${phonogram.receiver.fio}|">
     </table>
 </div>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Добавить телефонограмму</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control form-control-sm mb-2" type="text" placeholder="Номер" aria-label="Пример .form-control-sm">
+                <input type="date" class="form-control mb-2">
+                <textarea class="form-control mb-2" id="exampleFormControlTextarea1" rows="3" placeholder="Сообщение"></textarea>
+                <!-- Создатель -->
+                <select class="form-select mb-2" v-model="selectedDepartment" @change="changeDepartment()">
+                    <option selected disabled value="-1">Организация</option>
+                    <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.title}"/>
+                </select>
+                <select class="form-select mb-2" id="persons" ref="persons">
+                    <option selected disabled value="-1">Создатель</option>
+                    <option th:each="person : ${persons}" th:value="${person.id}" th:text="${person.fio}" th:department="${person.department.id}"/>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-success">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
+<script>
+
+const App = {
+    data() {
+        return {
+            selectedDepartment: -1
+        }
+    },
+    methods: {
+        changeDepartment() {
+            for(var i=1;i<this.$refs.persons.length;i++) {
+                this.$refs.persons[i].style.display = "block";
+            }
+            for(var i=1;i<this.$refs.persons.length;i++) {
+                if(this.$refs.persons[i].getAttribute("department") != this.selectedDepartment) {
+                    this.$refs.persons.options[i].style.display = "none";
+                }
+            }
+        }
+    }
+}
+
+Vue.createApp(App).mount('#exampleModal')
+
+</script>
+
 </html>

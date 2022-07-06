@@ -1,6 +1,7 @@
 package org.kepler.phonogram.controller;
 
 import org.kepler.phonogram.model.Department;
+import org.kepler.phonogram.model.Person;
 import org.kepler.phonogram.model.Phonogram;
 import org.kepler.phonogram.repo.DepartmentRepository;
 import org.kepler.phonogram.repo.PersonRepository;
@@ -28,6 +29,10 @@ public class Main {
     public String index(Model model) {
         List<Phonogram> phonograms = (List<Phonogram>) phonogramRepository.findAll();
         model.addAttribute("phonograms", phonograms);
+        List<Person> persons = (List<Person>) personRepository.findAll();
+        model.addAttribute("persons", persons);
+        List<Department> departments = (List<Department>) departmentRepository.findAll();
+        model.addAttribute("departments", departments);
         return "index";
     }
 }
