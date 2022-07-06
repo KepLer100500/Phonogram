@@ -57,31 +57,54 @@
 </div>
 
 <!-- Модальное окно -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Добавить телефонограмму</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-            </div>
-            <div class="modal-body">
-                <input class="form-control form-control-sm mb-2" type="text" placeholder="Номер" aria-label="Пример .form-control-sm">
-                <input type="date" class="form-control mb-2">
-                <textarea class="form-control mb-2" id="exampleFormControlTextarea1" rows="3" placeholder="Сообщение"></textarea>
-                <!-- Создатель -->
-                <select class="form-select mb-2" v-model="selectedDepartment" @change="changeDepartment()">
-                    <option selected disabled value="-1">Организация</option>
-                    <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.title}"/>
-                </select>
-                <select class="form-select mb-2" id="persons" ref="persons">
-                    <option selected disabled value="-1">Создатель</option>
-                    <option th:each="person : ${persons}" th:value="${person.id}" th:text="${person.fio}" th:department="${person.department.id}"/>
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-success">Сохранить</button>
-            </div>
+            <form action="/" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить телефонограмму</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <input name="item" class="form-control form-control-sm mb-2" type="text" placeholder="Номер">
+                    <input name="registrationDate" type="date" class="form-control mb-2">
+                    <textarea name="message" class="form-control mb-2" rows="3" placeholder="Сообщение"></textarea>
+                    <!-- Создатель -->
+                    <small class="text-muted">Создатель</small>
+                    <select class="form-select mb-2" v-model="writerSelectedDepartment" @change="changeWriterSelectedDepartment()">
+                        <option selected disabled value="-1">Организация</option>
+                        <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.title}"/>
+                    </select>
+                    <select name="writer" class="form-select mb-2" id="writer_id" ref="writer_id">
+                        <option selected disabled value="-1">Создатель</option>
+                        <option th:each="person : ${persons}" th:value="${person.id}" th:text="${person.fio}" th:department="${person.department.id}"/>
+                    </select>
+                    <!-- Отправитель -->
+                    <small class="text-muted">Отправитель</small>
+                    <select class="form-select mb-2" v-model="senderSelectedDepartment" @change="changeSenderSelectedDepartment()">
+                        <option selected disabled value="-1">Организация</option>
+                        <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.title}"/>
+                    </select>
+                    <select name="sender" class="form-select mb-2" id="sender_id" ref="sender_id">
+                        <option selected disabled value="-1">Отправитель</option>
+                        <option th:each="person : ${persons}" th:value="${person.id}" th:text="${person.fio}" th:department="${person.department.id}"/>
+                    </select>
+                    <!-- Получатель -->
+                    <small class="text-muted">Получатель</small>
+                    <select class="form-select mb-2" v-model="receiverSelectedDepartment" @change="changeReceiverSelectedDepartment()">
+                        <option selected disabled value="-1">Организация</option>
+                        <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.title}"/>
+                    </select>
+                    <select name="receiver" class="form-select mb-2" id="receiver_id" ref="receiver_id">
+                        <option selected disabled value="-1">Получатель</option>
+                        <option th:each="person : ${persons}" th:value="${person.id}" th:text="${person.fio}" th:department="${person.department.id}"/>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -92,24 +115,46 @@
 const App = {
     data() {
         return {
-            selectedDepartment: -1
+            writerSelectedDepartment: -1,
+            senderSelectedDepartment: -1,
+            receiverSelectedDepartment: -1
         }
     },
     methods: {
-        changeDepartment() {
-            for(var i=1;i<this.$refs.persons.length;i++) {
-                this.$refs.persons[i].style.display = "block";
+        changeWriterSelectedDepartment() {
+            for(var i=1;i<this.$refs.writer_id.length;i++) {
+                this.$refs.writer_id[i].style.display = "block";
             }
-            for(var i=1;i<this.$refs.persons.length;i++) {
-                if(this.$refs.persons[i].getAttribute("department") != this.selectedDepartment) {
-                    this.$refs.persons.options[i].style.display = "none";
+            for(var i=1;i<this.$refs.writer_id.length;i++) {
+                if(this.$refs.writer_id[i].getAttribute("department") != this.writerSelectedDepartment) {
+                    this.$refs.writer_id.options[i].style.display = "none";
+                }
+            }
+        },
+        changeSenderSelectedDepartment() {
+            for(var i=1;i<this.$refs.sender_id.length;i++) {
+                this.$refs.sender_id[i].style.display = "block";
+            }
+            for(var i=1;i<this.$refs.sender_id.length;i++) {
+                if(this.$refs.sender_id[i].getAttribute("department") != this.senderSelectedDepartment) {
+                    this.$refs.sender_id.options[i].style.display = "none";
+                }
+            }
+        },
+        changeReceiverSelectedDepartment() {
+            for(var i=1;i<this.$refs.receiver_id.length;i++) {
+                this.$refs.receiver_id[i].style.display = "block";
+            }
+            for(var i=1;i<this.$refs.receiver_id.length;i++) {
+                if(this.$refs.receiver_id[i].getAttribute("department") != this.receiverSelectedDepartment) {
+                    this.$refs.receiver_id.options[i].style.display = "none";
                 }
             }
         }
     }
 }
 
-Vue.createApp(App).mount('#exampleModal')
+Vue.createApp(App).mount('#exampleModal');
 
 </script>
 
