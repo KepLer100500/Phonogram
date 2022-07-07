@@ -1,0 +1,21 @@
+<div th:fragment="dataTable">
+    <div class="container mt-4">
+        <table class="table table-hover table-bordered" ref="dataTable" id="dataTable">
+            <tr class="table-primary">
+                <th>Номер
+                <th>Дата
+                <th>Сообщение
+                <th>Создатель
+                <th>Отправитель
+                <th>Получатель
+
+            <tr th:each="phonogram : ${phonograms}" onclick="getSelectedRow(this)" th:phonogram="${phonogram.id}">
+                <td th:text="${phonogram.item}">
+                <td th:text="${phonogram.registrationDate}">
+                <td th:text="${phonogram.message}">
+                <td th:text="|${phonogram.writer.department.title}, ${phonogram.writer.fio}|">
+                <td th:text="|${phonogram.sender.department.title}, ${phonogram.sender.fio}|">
+                <td th:text="|${phonogram.receiver.department.title}, ${phonogram.receiver.fio}|">
+        </table>
+    </div>
+</div>
