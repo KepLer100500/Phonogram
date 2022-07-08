@@ -9,7 +9,7 @@
                 <th>Отправитель
                 <th>Получатель
 
-            <tr th:each="phonogram : ${phonograms}" onclick="getSelectedRow(this)" th:phonogram="${phonogram.id}">
+            <tr th:each="phonogram : ${phonograms}" onclick="selectRow(this)" th:phonogram="${phonogram.id}">
                 <td th:text="${phonogram.item}">
                 <td th:text="${phonogram.registrationDate}">
                 <td th:text="${phonogram.message}">

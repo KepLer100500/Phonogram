@@ -1,17 +1,11 @@
 package org.kepler.phonogram.controller;
 
-import org.kepler.phonogram.model.Department;
-import org.kepler.phonogram.model.Person;
-import org.kepler.phonogram.model.Phonogram;
-import org.kepler.phonogram.repo.DepartmentRepository;
-import org.kepler.phonogram.repo.PersonRepository;
-import org.kepler.phonogram.repo.PhonogramRepository;
+import org.kepler.phonogram.model.*;
+import org.kepler.phonogram.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,4 +64,15 @@ public class Main {
 
         return "redirect:/";
     }
+
+    @PostMapping("/removePhonogram")
+    public String deleteMessage(@RequestParam int id, Model model) {
+        Optional<Phonogram> phonogram = phonogramRepository.findById(id);
+        if (phonogram.isPresent()) {
+            phonogramRepository.delete(phonogram.get());
+        }
+        return "redirect:/";
+    }
+
+
 }

@@ -18,7 +18,7 @@
                             <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.title}"/>
                         </select>
                         <select name="writer" class="form-select mb-2" id="writer_id" ref="writer_id" required>
-                            <option selected disabled value="">Создатель</option>
+                            <option selected disabled value="-1">Создатель</option>
                             <option th:each="person : ${persons}" th:value="${person.id}" th:text="${person.fio}" th:department="${person.department.id}"/>
                         </select>
                         <!-- Отправитель -->
