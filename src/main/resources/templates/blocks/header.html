@@ -19,8 +19,8 @@
     </header>
     <nav class="py-2 bg-light border-bottom">
         <div class="container">
-            <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Добавить</button>
-            <button type="button" class="btn btn-warning me-2">Изменить</button>
+            <button type="button" @click="modalWindowChangeTitleAndButton('Добавить', 'add')" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#modalWindow">Добавить</button>
+            <button type="button" @click="modalWindowChangeTitleAndButton('Изменить', 'edit')" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#modalWindow">Изменить</button>
             <button type="button" class="btn btn-danger me-2" @click="removePhonogram">Удалить</button>
             <input name="currentIdPhonogram" id="currentIdPhonogram" ref="currentIdPhonogram" type="text" value="" hidden>
         </div>

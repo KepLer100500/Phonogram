@@ -9,13 +9,13 @@
                 <th>Отправитель
                 <th>Получатель
 
-            <tr th:each="phonogram : ${phonograms}" onclick="selectRow(this)" th:phonogram="${phonogram.id}">
-                <td th:text="${phonogram.item}">
-                <td th:text="${phonogram.registrationDate}">
-                <td th:text="${phonogram.message}">
-                <td th:text="|${phonogram.writer.department.title}, ${phonogram.writer.fio}|">
-                <td th:text="|${phonogram.sender.department.title}, ${phonogram.sender.fio}|">
-                <td th:text="|${phonogram.receiver.department.title}, ${phonogram.receiver.fio}|">
+            <tr th:each="phonogram : ${phonograms}" @click="selectRow" th:id="|tr_${phonogram.id}|">
+                <td th:text="${phonogram.item}" th:phonogram="${phonogram.id}">
+                <td th:text="${phonogram.registrationDate}" th:phonogram="${phonogram.id}" nowrap>
+                <td th:text="${phonogram.message}" th:phonogram="${phonogram.id}">
+                <td th:text="|${phonogram.writer.department.title}, ${phonogram.writer.fio}|" th:phonogram="${phonogram.id}">
+                <td th:text="|${phonogram.sender.department.title}, ${phonogram.sender.fio}|" th:phonogram="${phonogram.id}">
+                <td th:text="|${phonogram.receiver.department.title}, ${phonogram.receiver.fio}|" th:phonogram="${phonogram.id}">
         </table>
     </div>
 </div>

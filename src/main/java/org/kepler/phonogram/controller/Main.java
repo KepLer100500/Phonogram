@@ -43,13 +43,13 @@ public class Main {
     }
 
     @PostMapping("/")
-    public String addMessage(@RequestParam String item,
-                             @RequestParam String registrationDate,
-                             @RequestParam String message,
-                             @RequestParam String writer,
-                             @RequestParam String sender,
-                             @RequestParam String receiver,
-                             Model model) {
+    public String add(@RequestParam String item,
+                      @RequestParam String registrationDate,
+                      @RequestParam String message,
+                      @RequestParam String writer,
+                      @RequestParam String sender,
+                      @RequestParam String receiver,
+                      Model model) {
 
         Phonogram phonogram = Phonogram.builder()
                 .direction("1")
@@ -66,7 +66,7 @@ public class Main {
     }
 
     @PostMapping("/removePhonogram")
-    public String deleteMessage(@RequestParam int id, Model model) {
+    public String delete(@RequestParam int id, Model model) {
         Optional<Phonogram> phonogram = phonogramRepository.findById(id);
         if (phonogram.isPresent()) {
             phonogramRepository.delete(phonogram.get());
@@ -74,5 +74,29 @@ public class Main {
         return "redirect:/";
     }
 
+    @PostMapping("/updatePhonogram")
+    public String update(@RequestParam String id,
+                         @RequestParam String item,
+                         @RequestParam String registrationDate,
+                         @RequestParam String message,
+                         @RequestParam String writer,
+                         @RequestParam String sender,
+                         @RequestParam String receiver,
+                         Model model) {
+
+        Phonogram phonogram = Phonogram.builder()
+                .id(Integer.parseInt(id))
+                .direction("1")
+                .item(item)
+                .registrationDate(registrationDate)
+                .message(message)
+                .writer(getPerson(writer))
+                .sender(getPerson(sender))
+                .receiver(getPerson(receiver))
+                .build();
+        phonogramRepository.save(phonogram);
+
+        return "redirect:/";
+    }
 
 }
