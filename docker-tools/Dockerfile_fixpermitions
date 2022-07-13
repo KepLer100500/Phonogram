@@ -1,0 +1,3 @@
+FROM alpine:latest
+WORKDIR /home/app/
+CMD ["chown -R jenkins target"]

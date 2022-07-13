@@ -59,6 +59,8 @@ pipeline {
                 dir('Phonogram') {
                     sh 'cp docker-tools/Dockerfile_build Dockerfile'
                     sh 'docker build -t builder:0.1 . && docker run -v `pwd`:/home/app/ -t builder:0.1'
+                    sh 'cp docker-tools/Dockerfile_fixpermitions Dockerfile'
+                    sh 'docker build -t fixpermitions:0.1 . && docker run -v `pwd`:/home/app/ -t fixpermitions:0.1'
                 }
             }
         }
