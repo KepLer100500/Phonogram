@@ -24,6 +24,7 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
 sudo apt-get update
 sudo apt-get install -y fontconfig openjdk-11-jre jenkins
 sudo usermod -a -G docker jenkins
+sudo systemctl restart jenkins.service
 
 # Clear
 sudo rm -rf compose/

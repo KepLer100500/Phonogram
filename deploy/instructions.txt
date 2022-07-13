@@ -1,3 +1,17 @@
+# Postgres
+
+sudo -u postgres createuser -s $USER -P  # Создать пользователя в postgres с именем текущей учётной записи, и задать ей пароль
+createdb test_db                         # Создать базу данных "test_db" для текущего пользователя
+psql -d test_db                          # Войти в базу данных (psql -h host -d database -U user -p port)
+
+sudo nano /etc/postgresql/11/main/postgresql.conf
+listen_addresses = '*'
+
+sudo nano /etc/postgresql/11/main/pg_hba.conf
+host    all             kepler          all                     md5
+
+sudo systemctl restart postgresql        # Перезапустить службу postgresql
+
 # Jenkins
 
 - Изменение порта jenkins с 8080 на 8081
@@ -22,16 +36,4 @@ Dashboard -> Credentials -> System -> Global credentials (unrestricted)
 
 - Создаём пайаплайн, не забываем указать "Discard old builds", чтобы место на диске не переполнялось
 
-# Postgres
-
-sudo -u postgres createuser -s $USER -P  # Создать пользователя в postgres с именем текущей учётной записи, и задать ей пароль
-createdb test_db                         # Создать базу данных "test_db" для текущего пользователя
-psql -d test_db                          # Войти в базу данных (psql -h host -d database -U user -p port)
-
-sudo nano /etc/postgresql/11/main/postgresql.conf
-listen_addresses = '*'
-
-sudo nano /etc/postgresql/11/main/pg_hba.conf
-host    all             kepler          all                     md5
-
-sudo systemctl restart postgresql        # Перезапустить службу postgresql
+sudo chown -Rh jenkins:jenkins /var/lib/jenkins/workspace/Phonogram # Даём права на workspace проекта
