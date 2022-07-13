@@ -26,7 +26,6 @@ pipeline {
     stages {
 		stage('Clean workspace') {
             steps {
-                sh "find /var/lib/jenkins/workspace/ -user root -delete"
                 cleanWs()
             }
         }
