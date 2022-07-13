@@ -26,7 +26,7 @@ pipeline {
     stages {
 		stage('Clean workspace') {
             steps {
-                sh "chmod -R 777 ."
+                sh "sudo chown -R jenkins ${WORKSPACE}"
                 cleanWs()
             }
         }
