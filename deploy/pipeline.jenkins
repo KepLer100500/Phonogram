@@ -24,6 +24,12 @@ pipeline {
     }
 
     stages {
+		stage('Clean workspace') {
+            steps {
+                sh "chmod -R 777 ."
+                cleanWs()
+            }
+        }
         stage('Get project from github') {
             steps {
                 sh 'git clone https://github.com/KepLer100500/Phonogram.git'

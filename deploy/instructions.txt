@@ -35,5 +35,3 @@ Dashboard -> Credentials -> System -> Global credentials (unrestricted)
 	"create" - при первом запуске, "validate" - при последующих
 
 - Создаём пайаплайн, не забываем указать "Discard old builds", чтобы место на диске не переполнялось
-
-sudo chown -Rh jenkins:jenkins /var/lib/jenkins/workspace/Phonogram # Даём права на workspace проекта
