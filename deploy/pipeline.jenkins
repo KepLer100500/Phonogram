@@ -1,0 +1,104 @@
+@NonCPS
+def parseIpAndDb(tmpUrl, user, pass, table) {
+    def url = tmpUrl =~ /\/\/(.+)\/(.+)$/
+    def ip = url[0][1]
+    def db = url[0][2]
+    query = "psql postgresql://" + user + ":" + pass + "@" + ip + ":5432/" + db + " -a -f Phonogram/default-sql/" + table + ".sql"
+    return query;
+}
+
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent any
+	
+	options {
+		timestamps()
+	}
+	
+	environment {
+        P_URL = credentials('spring.datasource.url')
+        P_USER = credentials('spring.datasource.username')
+        P_PASS = credentials('spring.datasource.password')
+        P_DDL = credentials('spring.jpa.hibernate.ddl-auto')
+    }
+
+    stages {
+		stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Get project from github') {
+            steps {
+                sh 'git clone https://github.com/KepLer100500/Phonogram.git'
+            }
+        }
+		stage('Change application config') {
+            steps {
+				script {
+					sh (script: 'printf "spring.datasource.url=${URL}\n" > Phonogram/src/main/resources/application.properties', returnStdout: false)
+					sh (script: 'printf "spring.datasource.username=${USER}\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
+					sh (script: 'printf "spring.datasource.password=${PASS}\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
+					sh (script: 'printf "spring.jpa.hibernate.ddl-auto=${DDL}\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
+					sh (script: 'printf "spring.datasource.driverClassName=org.postgresql.Driver\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
+					sh (script: 'printf "spring.jpa.show-sql=true\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
+				}
+            }
+        }
+        stage('Build app with maven') {
+            steps {
+                dir('Phonogram') {
+                    sh 'cp docker-tools/Dockerfile_build Dockerfile'
+                    sh 'docker build -t builder:0.1 . && docker run -v `pwd`:/home/app/ -t builder:0.1'
+                }
+            }
+        }
+        stage('Prepare to start docker containers') {
+            steps {
+                dir('Phonogram') {
+                    sh 'cp docker-tools/Dockerfile_java Dockerfile'
+                    sh 'cp docker-tools/Dockerfile_nginx docker-tools/Dockerfile'
+                    sh 'cp docker-tools/docker-compose.yml docker-compose.yml'
+                }
+            }
+        }
+		stage('Stop runned containers') {
+            steps {
+                script {
+                    def STATUS_WEB_SERVER = sh(script: 'docker ps -q --filter="name=web_server"', returnStdout: true).trim()
+                    def STATUS_WEB_APP = sh(script: 'docker ps -q --filter="name=web_app"', returnStdout: true).trim()
+
+                    if(STATUS_WEB_SERVER != "") {
+                        sh 'docker stop $(docker ps -q --filter="name=web_server")'
+                    }
+                    if(STATUS_WEB_APP != "") {
+                        sh 'docker stop $(docker ps -q --filter="name=web_app")'
+                    }
+                }
+            }
+        }
+        stage('Build docker containers and run project') {
+            steps {
+                dir('Phonogram') {
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+        stage('Insert default values in tables if it first start app (ddl-auto=create)') {
+            steps {
+                script {
+                    sleep(time:30, unit:"SECONDS") // Wait until the spring is loaded
+					
+					def tables = ['department', 'person', 'phonogram']
+                    if(P_DDL == 'create') {
+                        tables.each { table ->
+                            def query = parseIpAndDb(P_URL, P_USER, P_PASS, table)
+                            sh (script: query, returnStdout: false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

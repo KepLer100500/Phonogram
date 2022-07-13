@@ -1,0 +1,37 @@
+# Jenkins
+
+- Изменение порта jenkins с 8080 на 8081
+sudo nano /etc/default/jenkins
+sudo systemctl restart jenkins.service
+если не помогло:
+sudo nano /lib/systemd/system/jenkins.service
+sudo systemctl daemon-reload
+sudo systemctl restart jenkins.service
+
+- Создание ключей для jenkins, эти значения впоследствие попадут в application.properties
+Dashboard -> Credentials -> System -> Global credentials (unrestricted)
+	spring.datasource.url
+	spring.datasource.username
+	spring.datasource.password
+	spring.jpa.hibernate.ddl-auto
+Указать этим ключам значения, соответсвенно:
+	jdbc:postgresql://192.168.1.89/test_db
+	postgres_kepler
+	postgres_kepler_pass
+	"create" - при первом запуске, "validate" - при последующих
+
+- Создаём пайаплайн, не забываем указать "Discard old builds", чтобы место на диске не переполнялось.
+
+# Postgres
+
+sudo -u postgres createuser --interactive # Создать новую роль для пользователя (postgres_kepler)
+sudo -u postgres_kepler createdb test_db  # Создать базу данных "test_db" для нового пользователя "postgres_kepler"
+sudo -u postgres psql                     # Зайти в psql
+test_db=# \password postgres_kepler       # Задать пароль новому пользователю "postgres_kepler"
+sudo systemctl restart postgresql         # Перезапустить службу postgresql
+
+/etc/postgresql/11/main/postgresql.conf
+listen_addresses = '*'
+
+/etc/postgresql/11/main/pg_hba.conf
+host    all             postgres_kepler          all                     md5
