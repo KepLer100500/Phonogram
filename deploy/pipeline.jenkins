@@ -24,11 +24,6 @@ pipeline {
     }
 
     stages {
-		stage('Clean workspace') {
-            steps {
-                cleanWs()
-            }
-        }
         stage('Get project from github') {
             steps {
                 sh 'git clone https://github.com/KepLer100500/Phonogram.git'
