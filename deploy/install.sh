@@ -26,8 +26,8 @@ sudo apt-get install -y fontconfig openjdk-11-jre jenkins
 sudo usermod -a -G docker jenkins
 
 # Clear
-sudo rm -rf ~/compose/
-sudo rm ~/get-docker.sh
+sudo rm -rf compose/
+sudo rm get-docker.sh
 
 # Check
 docker -v

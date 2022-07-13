@@ -15,23 +15,23 @@ Dashboard -> Credentials -> System -> Global credentials (unrestricted)
 	spring.datasource.password
 	spring.jpa.hibernate.ddl-auto
 Указать этим ключам значения, соответсвенно:
-	jdbc:postgresql://192.168.1.89/test_db
+	jdbc:postgresql://192.168.1.191/test_db
 	postgres_kepler
 	postgres_kepler_pass
 	"create" - при первом запуске, "validate" - при последующих
 
-- Создаём пайаплайн, не забываем указать "Discard old builds", чтобы место на диске не переполнялось.
+- Создаём пайаплайн, не забываем указать "Discard old builds", чтобы место на диске не переполнялось
 
 # Postgres
 
-sudo -u postgres createuser --interactive # Создать новую роль для пользователя (postgres_kepler)
-sudo -u postgres_kepler createdb test_db  # Создать базу данных "test_db" для нового пользователя "postgres_kepler"
-sudo -u postgres psql                     # Зайти в psql
-test_db=# \password postgres_kepler       # Задать пароль новому пользователю "postgres_kepler"
-sudo systemctl restart postgresql         # Перезапустить службу postgresql
+sudo -u postgres createuser -s $USER -P  # Создать пользователя в postgres с именем текущей учётной записи, и задать ей пароль
+createdb test_db                         # Создать базу данных "test_db" для текущего пользователя
+psql -d test_db                          # Войти в базу данных (psql -h host -d database -U user -p port)
 
-/etc/postgresql/11/main/postgresql.conf
+sudo nano /etc/postgresql/11/main/postgresql.conf
 listen_addresses = '*'
 
-/etc/postgresql/11/main/pg_hba.conf
-host    all             postgres_kepler          all                     md5
+sudo nano /etc/postgresql/11/main/pg_hba.conf
+host    all             kepler          all                     md5
+
+sudo systemctl restart postgresql        # Перезапустить службу postgresql

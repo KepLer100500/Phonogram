@@ -36,14 +36,22 @@ pipeline {
         }
 		stage('Change application config') {
             steps {
-				script {
-					sh (script: 'printf "spring.datasource.url=${URL}\n" > Phonogram/src/main/resources/application.properties', returnStdout: false)
-					sh (script: 'printf "spring.datasource.username=${USER}\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
-					sh (script: 'printf "spring.datasource.password=${PASS}\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
-					sh (script: 'printf "spring.jpa.hibernate.ddl-auto=${DDL}\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
-					sh (script: 'printf "spring.datasource.driverClassName=org.postgresql.Driver\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
-					sh (script: 'printf "spring.jpa.show-sql=true\n" >> Phonogram/src/main/resources/application.properties', returnStdout: false)
-				}
+				dir('Phonogram') {
+                    withCredentials([string(credentialsId: 'spring.datasource.url', variable: 'URL')]) {
+                        sh 'printf "spring.datasource.url=${URL}\n" > src/main/resources/application.properties'
+                    }
+                    withCredentials([string(credentialsId: 'spring.datasource.username', variable: 'USER')]) {
+                        sh 'printf "spring.datasource.username=${USER}\n" >> src/main/resources/application.properties'
+                    }
+                    withCredentials([string(credentialsId: 'spring.datasource.password', variable: 'PASS')]) {
+                        sh 'printf "spring.datasource.password=${PASS}\n" >> src/main/resources/application.properties'
+                    }
+                    withCredentials([string(credentialsId: 'spring.jpa.hibernate.ddl-auto', variable: 'DDL')]) {
+                        sh 'printf "spring.jpa.hibernate.ddl-auto=${DDL}\n" >> src/main/resources/application.properties'
+                    }
+                    sh 'printf "spring.datasource.driverClassName=org.postgresql.Driver\n" >> src/main/resources/application.properties'
+                    sh 'printf "spring.jpa.show-sql=true\n" >> src/main/resources/application.properties'
+                }
             }
         }
         stage('Build app with maven') {
