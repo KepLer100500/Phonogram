@@ -1,3 +1,6 @@
 FROM maven:3.8.5-openjdk-17-slim
 WORKDIR /home/app/
-CMD ["mvn","clean","package && chown -R jenkins target"]
+CMD ["mvn","clean","package"]
+FROM alpine:latest
+WORKDIR /home/app/
+CMD ["chown -R jenkins target"]
